@@ -1,6 +1,15 @@
+"use client";
 import Link from "next/link";
+import { ModalProfile } from "./modal-profile";
+import { useEffect, useState } from "react";
 
 const Header = () => {
+  const [isSignIn, setIsSignIn] = useState(false);
+
+  useEffect(() => {
+    setIsSignIn(true);
+  }, [isSignIn]);
+
   return (
     <>
       <header id="header" className="smt-header">
@@ -30,11 +39,12 @@ const Header = () => {
                     Login
                   </i>
                 </Link> */}
-                <Link href="/profile">
+                <div>
                   <i className="hover:text-gray-200 focus:text-gray-400 focus:outline-none">
-                    Profile
+                    {/* Profile */}
+                    {isSignIn ? <ModalProfile /> : "sign in"}
                   </i>
-                </Link>
+                </div>
               </div>
             </div>
           </nav>

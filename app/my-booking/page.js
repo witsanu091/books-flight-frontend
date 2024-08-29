@@ -1,11 +1,13 @@
+/**
+ * v0 by Vercel.
+ * @see https://v0.dev/t/2NWelgAxODQ
+ * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
+ */
 import { Button } from "@/components/ui/button";
 
-export function Component() {
+export default function MyBooking() {
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="bg-primary text-primary-foreground py-4 px-6">
-        <h1 className="text-2xl font-bold">Your Flights</h1>
-      </header>
+    <div className="w-full max-w-6xl mx-auto py-12 md:py-16 lg:py-20 px-4 md:px-6">
       <main className="flex-1 py-8 px-6 md:px-10 lg:px-16">
         <section className="mb-8">
           <h2 className="text-xl font-semibold mb-4">Your Current Flight</h2>

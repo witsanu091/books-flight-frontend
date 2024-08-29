@@ -73,9 +73,7 @@ export default function SearchFlight() {
                 </div>
               </div>
             </div>
-            <Button type="submit" className="w-full">
-              Search Flights
-            </Button>
+            <Button className="w-full">Search Flights</Button>
           </form>
         </div>
         <div className="space-y-4">
