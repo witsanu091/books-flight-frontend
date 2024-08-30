@@ -1,9 +1,5 @@
-/**
- * v0 by Vercel.
- * @see https://v0.dev/t/2NWelgAxODQ
- * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
- */
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function MyBooking() {
   return (
@@ -11,25 +7,34 @@ export default function MyBooking() {
       <main className="flex-1 py-8 px-6 md:px-10 lg:px-16">
         <section className="mb-8">
           <h2 className="text-xl font-semibold mb-4">Your Current Flight</h2>
-          <div className="bg-muted rounded-lg p-6 flex flex-col md:flex-row items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex flex-col">
-                <div className="text-lg font-medium">San Francisco (SFO)</div>
-                <div className="text-muted-foreground">Departure</div>
+          <Link
+            href={{
+              pathname: "/booking-detail",
+              query: { book_no: "1245" },
+            }}
+          >
+            <div className="bg-muted rounded-lg p-6 flex flex-col md:flex-row items-center justify-between">
+              <div className="flex items-center gap-4">
+                {/* <a>Go to Booking Detail</a> */}
+                <div className="flex flex-col">
+                  <div className="text-lg font-medium">San Francisco (SFO)</div>
+                  <div className="text-muted-foreground">Departure</div>
+                </div>
+
+                <PlaneIcon className="w-8 h-8" />
+                <div className="flex flex-col">
+                  <div className="text-lg font-medium">New York (JFK)</div>
+                  <div className="text-muted-foreground">Arrival</div>
+                </div>
               </div>
-              <PlaneIcon className="w-8 h-8" />
-              <div className="flex flex-col">
-                <div className="text-lg font-medium">New York (JFK)</div>
-                <div className="text-muted-foreground">Arrival</div>
+              <div className="flex flex-col items-end">
+                <div className="text-lg font-medium">Flight #AB123</div>
+                <div className="text-muted-foreground">
+                  June 15, 2023 - 8:30 AM
+                </div>
               </div>
             </div>
-            <div className="flex flex-col items-end">
-              <div className="text-lg font-medium">Flight #AB123</div>
-              <div className="text-muted-foreground">
-                June 15, 2023 - 8:30 AM
-              </div>
-            </div>
-          </div>
+          </Link>
         </section>
         <section>
           <h2 className="text-xl font-semibold mb-4">Your Flights</h2>

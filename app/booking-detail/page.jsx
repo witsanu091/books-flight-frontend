@@ -1,6 +1,9 @@
+"use client";
 import { Button } from "@/components/ui/button";
 
-export default function Component() {
+export default function BookingDetail({ searchParams }) {
+  const { book_no } = searchParams;
+  console.log("🚀  book_no:", book_no);
   return (
     <div className="w-full max-w-6xl mx-auto md:py-16 lg:py-16 px-4 md:px-6">
       <header className="bg-primary text-primary-foreground py-4 px-6 flex items-center justify-between">

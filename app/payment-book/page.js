@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 
-export default function Component() {
+export default function PaymentBook() {
   return (
     <div className="flex flex-col min-h-[100dvh]">
       <header className="bg-primary text-primary-foreground py-4 px-6">

@@ -1,14 +1,22 @@
 "use client";
 import Link from "next/link";
-import { ModalProfile } from "./modal-profile";
+// import { ModalAuthentication } from "./modalAuthentication";
 import { useEffect, useState } from "react";
+import { ModalAuthentication } from "./modalAuthentication";
+import { clearStorage, getStorage, getToken } from "@/lib/utils/utils";
 
 const Header = () => {
   const [isSignIn, setIsSignIn] = useState(false);
+  // console.log("🚀  token:", token);
 
   useEffect(() => {
-    setIsSignIn(true);
-  }, [isSignIn]);
+    const token = getToken();
+    console.log("🚀  token:", token);
+
+    if (token) {
+      setIsSignIn(true);
+    }
+  }, []);
 
   return (
     <>
@@ -42,7 +50,7 @@ const Header = () => {
                 <div>
                   <i className="hover:text-gray-200 focus:text-gray-400 focus:outline-none">
                     {/* Profile */}
-                    {isSignIn ? <ModalProfile /> : "sign in"}
+                    {isSignIn ? "sign in a" : <ModalAuthentication />}
                   </i>
                 </div>
               </div>
