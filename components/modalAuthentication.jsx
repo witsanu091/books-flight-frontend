@@ -6,17 +6,16 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import Link from "next/link";
 import { useEffect, useState } from "react";
+import { setStorage } from "@/lib/utils/utils";
 import { callSignIn } from "@/lib/call-api/callAuthentication";
-import { clearStorage, setStorage } from "@/lib/utils/utils";
 
 export function ModalAuthentication() {
   const [modeAuth, setModeAuth] = useState(false);
   const [errors, setErrors] = useState({ email: "" });
+  const [modalAuthentication, setModalAuthentication] = useState(false);
   const [dataSignOn, setDataSignOn] = useState({
     first_name: "",
     last_name: "",
@@ -55,28 +54,30 @@ export function ModalAuthentication() {
     setErrors((prevErrors) => ({ ...prevErrors, email: error }));
   };
 
+  const handlePasswordChange = (e) => {
+    const { value } = e.target;
+    setDataSignIn({ ...dataSignIn, password: value });
+  };
+
   const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      // e.preventDefault();
-      // const emailError = validateEmail(email);
-      // if (emailError) {
-      //   setErrors({ email: emailError });
-      //   return;
-      // }
-      // authentication.bodySignIn = dataSignIn;
+      console.log("🚀  dataSignIn:", dataSignIn);
 
       const result = await callSignIn(dataSignIn);
-      console.log("🚀  result:", result);
 
       if (result) {
-        await setStorage("token", result.body?.response_data?.token_id);
+        await setStorage({
+          key: "token",
+          value: result.data?.response_data?.token_id,
+        });
+        setModalAuthentication(false); // Close the dialog on success
+      } else {
+        alert("Can't log in. Please check your credentials.");
       }
-
-      console.log("Form submitted with email:", email);
     } catch (error) {
       console.log("🚀  error:", error);
     }
-    console.log("🚀  dataSignIn:", dataSignIn);
   };
 
   const signInWithGoogle = () => {};
@@ -85,10 +86,10 @@ export function ModalAuthentication() {
     setModeAuth(true); // or true, based on logic
   }, []);
   return (
-    <Dialog>
+    <Dialog open={modalAuthentication} onOpenChange={setModalAuthentication}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="" className="">
-          <DialogTitle>Sign In</DialogTitle>
+        <Button variant="ghost" onClick={() => setModalAuthentication(true)}>
+          <i>Sign In</i>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[420px]">
@@ -100,6 +101,7 @@ export function ModalAuthentication() {
                   Sign In
                 </DialogTitle>
               </div>
+              <form handleSubmit></form>
               <div className="space-y-4">
                 <Button variant="outline" className="w-full">
                   <GithubIcon className="mr-2 h-4 w-4" />
@@ -141,9 +143,7 @@ export function ModalAuthentication() {
                     <Input
                       id="password"
                       type="password"
-                      onChange={(value) =>
-                        setDataSignIn({ ...dataSignIn, password: value })
-                      }
+                      onChange={handlePasswordChange}
                       required
                     />
                   </div>
@@ -151,10 +151,12 @@ export function ModalAuthentication() {
                     type="submit"
                     className="w-full mt-6"
                     disabled={!!errors.email}
+                    // onClick={handleSubmit}
                   >
                     Sign In
                   </Button>
                 </form>
+
                 <div className="mt-6  text-center text-sm">
                   Don't have an account?{" "}
                   <p className="underline" onClick={() => setModeAuth(false)}>

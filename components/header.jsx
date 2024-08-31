@@ -4,19 +4,30 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ModalAuthentication } from "./modalAuthentication";
 import { clearStorage, getStorage, getToken } from "@/lib/utils/utils";
+import { Button } from "./ui/button";
 
 const Header = () => {
   const [isSignIn, setIsSignIn] = useState(false);
   // console.log("🚀  token:", token);
 
-  useEffect(() => {
-    const token = getToken();
-    console.log("🚀  token:", token);
-
-    if (token) {
-      setIsSignIn(true);
+  const signOut = async () => {
+    await clearStorage();
+    try {
+    } catch (error) {
+      console.log("🚀  error:", error);
     }
-  }, []);
+  };
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      const token = await getToken();
+      if (token) {
+        setIsSignIn(true);
+      }
+    };
+
+    fetchToken();
+  }, [isSignIn]);
 
   return (
     <>
@@ -33,12 +44,12 @@ const Header = () => {
               </div>
               <div className="hidden md:flex space-x-4">
                 <Link href="my-booking">
-                  <i className="hover:text-gray-200 focus:text-gray-400 focus:outline-none">
+                  <i className="hover:text-gray-200 focus:text-gray-350 focus:outline-none">
                     My Booking
                   </i>
                 </Link>
                 <Link href="search-flight">
-                  <i className="hover:text-gray-200 focus:text-gray-400 focus:outline-none">
+                  <i className="hover:text-gray-200 focus:text-gray-350 focus:outline-none">
                     flight Status
                   </i>
                 </Link>
@@ -50,7 +61,18 @@ const Header = () => {
                 <div>
                   <i className="hover:text-gray-200 focus:text-gray-400 focus:outline-none">
                     {/* Profile */}
-                    {isSignIn ? "sign in a" : <ModalAuthentication />}
+                    {isSignIn ? (
+                      <Button
+                        variant="ghost"
+                        size=""
+                        className=""
+                        onClick={() => signOut()}
+                      >
+                        <i>Sign Out</i>
+                      </Button>
+                    ) : (
+                      <ModalAuthentication />
+                    )}
                   </i>
                 </div>
               </div>
