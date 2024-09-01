@@ -10,22 +10,29 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import { setStorage } from "@/lib/utils/utils";
-import { callSignIn } from "@/lib/call-api/callAuthentication";
+import { callSignIn, callSignOn } from "@/lib/call-api/callAuthentication";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 export function ModalAuthentication() {
-  const [modeAuth, setModeAuth] = useState(false);
+  const [modeAuth, setModeAuth] = useState(true);
   const [errors, setErrors] = useState({ email: "" });
   const [modalAuthentication, setModalAuthentication] = useState(false);
   const [dataSignOn, setDataSignOn] = useState({
     first_name: "",
     last_name: "",
     email: "",
-    cid: "",
     mobile: "",
-    gender: "",
+    gender: "Male",
     user_name: "",
     password: "",
     enabled: true,
+    user_role: "customer",
   });
   const [dataSignIn, setDataSignIn] = useState({
     user_name: "",
@@ -54,12 +61,20 @@ export function ModalAuthentication() {
     setErrors((prevErrors) => ({ ...prevErrors, email: error }));
   };
 
+  const handleEmailSignOnChange = (e) => {
+    const { value } = e.target;
+    setDataSignOn({ ...dataSignOn, email: value });
+
+    const error = validateEmail(value);
+    setErrors((prevErrors) => ({ ...prevErrors, email: error }));
+  };
+
   const handlePasswordChange = (e) => {
     const { value } = e.target;
     setDataSignIn({ ...dataSignIn, password: value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmitSignIn = async (e) => {
     e.preventDefault();
     try {
       console.log("🚀  dataSignIn:", dataSignIn);
@@ -79,11 +94,38 @@ export function ModalAuthentication() {
       console.log("🚀  error:", error);
     }
   };
+  const handleSubmitSignOn = async (e) => {
+    try {
+      e.preventDefault();
+      console.log("🚀  dataSignOn:", dataSignOn);
 
+      const result = await callSignOn(dataSignOn);
+
+      if (result) {
+        alert("Sign On Success");
+        setModeAuth(true);
+        setDataSignOn({
+          first_name: "",
+          last_name: "",
+          email: "",
+          mobile: "",
+          gender: "Male",
+          user_name: "",
+          password: "",
+          enabled: true,
+          user_role: "customer",
+        });
+      } else {
+        alert("Can't Sign On. Please check your credentials.");
+      }
+    } catch (error) {
+      console.log("🚀  error:", error);
+    }
+  };
   const signInWithGoogle = () => {};
 
   useEffect(() => {
-    setModeAuth(true); // or true, based on logic
+    setModeAuth(true);
   }, []);
   return (
     <Dialog open={modalAuthentication} onOpenChange={setModalAuthentication}>
@@ -92,7 +134,7 @@ export function ModalAuthentication() {
           <i>Sign In</i>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[420px]">
+      <DialogContent className="sm:max-w-[480px]">
         {modeAuth ? (
           <div className="flex min-h-[60dvh] flex-col items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-md space-y-6">
@@ -101,7 +143,6 @@ export function ModalAuthentication() {
                   Sign In
                 </DialogTitle>
               </div>
-              <form handleSubmit></form>
               <div className="space-y-4">
                 <Button variant="outline" className="w-full">
                   <GithubIcon className="mr-2 h-4 w-4" />
@@ -125,7 +166,7 @@ export function ModalAuthentication() {
                     </span>
                   </div>
                 </div>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmitSignIn}>
                   <div className="grid gap-2 py-4">
                     <Label htmlFor="email">Email</Label>
                     <Input
@@ -167,61 +208,152 @@ export function ModalAuthentication() {
             </div>
           </div>
         ) : (
-          <div className="flex min-h-[80dvh] flex-col items-center justify-center bg-background px-4 py-10 sm:px-6 lg:px-8">
-            <div className="mx-auto max-w-md space-y-4">
-              <div className="space-y-2 text-center">
-                <DialogTitle className="text-3xl font-bold">
-                  Register
-                </DialogTitle>
-                <p className="text-muted-foreground">
-                  Create a new account to access our platform.
-                </p>
-              </div>
-              <div className="space-y-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="name">Name</Label>
-                  <Input
-                    id="name"
-                    type="text"
-                    placeholder="John Doe"
-                    required
-                  />
+          <div className="flex min-h-[80dvh] flex-col items-center justify-center bg-background px-4 py-8 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-md space-y-6">
+              <form onSubmit={handleSubmitSignOn}>
+                <div className="space-y-2 text-center">
+                  <DialogTitle className="text-3xl font-bold">
+                    Register
+                  </DialogTitle>
+                  <p className="text-muted-foreground">
+                    Create a new account to access our platform.
+                  </p>
                 </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
+                <div className="grid grid-cols-2 gap-4  pt-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="firstName">First Name</Label>
+                    <Input
+                      id="firstName"
+                      type="text"
+                      placeholder="your first name"
+                      value={dataSignOn.first_name}
+                      onChange={(e) =>
+                        setDataSignOn({
+                          ...dataSignOn,
+                          first_name: e.target.value,
+                        })
+                      }
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="lastName">Last Name</Label>
+                    <Input
+                      id="lastName"
+                      type="text"
+                      placeholder="your last name"
+                      value={dataSignOn.last_name}
+                      onChange={(e) =>
+                        setDataSignOn({
+                          ...dataSignOn,
+                          last_name: e.target.value,
+                        })
+                      }
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="grid gap-4">
+                  <Label htmlFor="email" className="pt-4">
+                    Email
+                  </Label>
                   <Input
                     id="email"
                     type="email"
                     placeholder="m@example.com"
+                    value={dataSignOn.email}
+                    onChange={handleEmailSignOnChange}
                     required
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="password">Password</Label>
-                  <Input id="password" type="password" required />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="phone">Phone</Label>
+                  <Label htmlFor="username" className="pt-4">
+                    Username
+                  </Label>
                   <Input
-                    id="phone"
-                    type="tel"
-                    placeholder="(123) 456-7890"
+                    id="username"
+                    type="text"
+                    placeholder="example"
+                    value={dataSignOn.user_name}
+                    onChange={(e) =>
+                      setDataSignOn({
+                        ...dataSignOn,
+                        user_name: e.target.value,
+                      })
+                    }
                     required
                   />
                 </div>
-
-                <Button type="submit" className="w-full">
-                  Sign Up
-                </Button>
+                <div className="grid gap-2">
+                  <Label htmlFor="password" className="pt-4">
+                    Password
+                  </Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={dataSignOn.password}
+                    onChange={(e) =>
+                      setDataSignOn({
+                        ...dataSignOn,
+                        password: e.target.value,
+                      })
+                    }
+                    required
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4 pt-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="mobile">Phone</Label>
+                    <Input
+                      id="mobile"
+                      type="tel"
+                      value={dataSignOn.mobile}
+                      onChange={(e) =>
+                        setDataSignOn({
+                          ...dataSignOn,
+                          mobile: e.target.value,
+                        })
+                      }
+                      placeholder="09xxxxxxxx"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="gender">Gender</Label>
+                    <Select
+                      id="gender"
+                      value={dataSignOn.gender}
+                      onValueChange={(value) =>
+                        setDataSignOn({ ...dataSignOn, gender: value })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue
+                          placeholder={dataSignOn.gender || "Male"}
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Male">Male</SelectItem>
+                        <SelectItem value="Female">Female</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="pt-4">
+                  <Button type="submit" className="w-full py-4">
+                    Sign Up
+                  </Button>
+                </div>
                 <div className="mt-4 text-center text-sm">
-                  Already have an account?{" "}
+                  Already have an account?
                   <div className="underline" onClick={() => setModeAuth(true)}>
                     Sign In
                   </div>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
+          // </div>
         )}
       </DialogContent>
     </Dialog>

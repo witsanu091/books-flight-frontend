@@ -47,7 +47,7 @@ const AutocompleteDestination = ({ airport }) => {
   return (
     <div className={styles.autocomplete}>
       <Input
-        id="departure"
+        id="arrival"
         placeholder="To"
         type="text"
         value={query}

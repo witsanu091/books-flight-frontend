@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 // import { ModalAuthentication } from "./modalAuthentication";
 import { useEffect, useState } from "react";
 import { ModalAuthentication } from "./modalAuthentication";
@@ -9,9 +10,13 @@ import { Button } from "./ui/button";
 const Header = () => {
   const [isSignIn, setIsSignIn] = useState(false);
   // console.log("🚀  token:", token);
+  const router = useRouter();
 
   const signOut = async () => {
+    e.preventDefault();
     await clearStorage();
+    router.push("/search-flight");
+
     try {
     } catch (error) {
       console.log("🚀  error:", error);

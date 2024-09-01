@@ -72,20 +72,14 @@ export default function SearchFlight() {
   };
 
   const handleNavigate = () => {
-    router.push({
-      pathname: "/flight-searching",
-      query: {
-        data: JSON.stringify({
-          searchFlightDeparture,
-          searchFlightArrival,
-        }),
-      },
+    router.push("/flight-searching", {
+      query: JSON.stringify({
+        searchFlightDeparture,
+        searchFlightArrival,
+      }),
     });
+    alert("push");
   };
-
-  if (!router) {
-    return null;
-  }
 
   useEffect(() => {
     getAllFlightRecommend();
@@ -188,7 +182,8 @@ export default function SearchFlight() {
             <Button
               className="w-full"
               onClick={() => {
-                handleNavigate();
+                // handleNavigate();
+                router.push("my-booking");
               }}
             >
               Search Flights
@@ -206,7 +201,7 @@ export default function SearchFlight() {
                   href="#"
                   className="bg-muted rounded-lg p-4 flex flex-col gap-2 hover:bg-accent hover:text-accent-foreground transition-colors"
                   prefetch={false}
-                  index={index}
+                  key={index}
                 >
                   <PlaneIcon className="w-8 h-8" />
                   <div className="font-medium">{flight.landing_airport}</div>
