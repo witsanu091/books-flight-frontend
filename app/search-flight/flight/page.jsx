@@ -1,27 +1,42 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useEffect, useState } from "react";
 
-export default function FlightSearching() {
+export default function FlightSearching({ searchParams }) {
+  const [searchFlightDeparture, setSearchFlightDeparture] = useState({});
+  const [searchFlightArrival, setSearchFlightArrival] = useState({});
+  const { search } = searchParams;
+  console.log("🚀  search:", search);
+  console.log("🚀  searchFlightDeparture:", searchFlightDeparture);
+  console.log("🚀  searchFlightArrival:", searchFlightArrival);
+
+  useEffect(() => {
+    if (search) {
+      const data = JSON.parse(search);
+      setSearchFlightDeparture(data.searchFlightDeparture);
+      setSearchFlightArrival(data.searchFlightArrival);
+    }
+  }, [search]);
+
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="bg-primary text-primary-foreground py-4 px-6">
-        <div className="container mx-auto flex items-center justify-between">
+    <div className="mt-16">
+      <div className="bg-primary text-primary-foreground py-4 px-6">
+        <div className=" mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <PlaneIcon className="w-6 h-6" />
             <div className="grid gap-1">
-              <div className="text-lg font-medium">SFO {"=>"} JFK</div>
+              <div className="text-lg font-medium">
+                {searchFlightDeparture.airport_take_off_name} {"=>"}{" "}
+                {searchFlightDeparture.airport_landing_name}
+              </div>
               <div className="text-sm text-primary-foreground/80">
                 Aug 15, 2024
               </div>
             </div>
           </div>
-          {/* <Button variant="ghost" size="icon" className="rounded-full">
-            <FilterIcon className="w-5 h-5" />
-            <span className="sr-only">Filters</span>
-          </Button> */}
         </div>
-      </header>
+      </div>
       <div className="w-full max-w-6xl mx-auto py-12 md:py-16 lg:py-20 px-4 md:px-6">
         <div className="grid gap-6">
           <Card>

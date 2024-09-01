@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Router from "next/router";
+// import { useRouter } from "next/router";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import {
@@ -22,7 +22,6 @@ import {
 } from "@/lib/call-api/callFlight";
 
 export default function SearchFlight() {
-  // const router = useRouter();
   const [valueDepartFrom, setValueDepartFrom] = useState({});
   const [valueDestination, setValueDestination] = useState({});
   const [countCustomer, setCountCustomer] = useState("1");
@@ -72,14 +71,20 @@ export default function SearchFlight() {
   };
 
   const handleNavigate = () => {
-    Router.push("/flight-searching", {
-      query: JSON.stringify({
-        searchFlightDeparture,
-        searchFlightArrival,
-      }),
-    });
+    router.push("/my-booking");
+    // Router.push("/flight-searching", {
+    //   query: JSON.stringify({
+    //     searchFlightDeparture,
+    //     searchFlightArrival,
+    //   }),
+    // });
+    alert("test");
+
     alert("push");
   };
+  // const router = useRouter();
+
+  // if (!router.isReady) return null; // or some loading indicator
 
   useEffect(() => {
     getAllFlightRecommend();
@@ -88,18 +93,22 @@ export default function SearchFlight() {
   useEffect(() => {
     setSearchFlightDeparture({
       airport_take_off: valueDepartFrom.airport_id,
+      airport_take_off_name: valueDepartFrom.airport_name,
       airport_landing: valueDestination.airport_id,
+      airport_landing_name: valueDestination.airport_name,
       flight_date: dateTravel.date_go,
     });
     setSearchFlightArrival({
       airport_take_off: valueDestination.airport_id,
+      airport_take_off_name: valueDestination.airport_name,
       airport_landing: valueDepartFrom.airport_id,
+      airport_landing_name: valueDepartFrom.airport_name,
       flight_date: dateTravel.date_return,
     });
   }, [valueDepartFrom, dateTravel]);
 
   return (
-    <div className="w-full max-w-6xl mx-auto py-12 md:py-16 lg:py-20 px-4 md:px-6">
+    <div className="w-full max-w-6xl mx-auto py-12 md:py-16 lg:py-20 px-4 md:px-6 mt-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
         <div className="space-y-4">
           <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
@@ -108,7 +117,7 @@ export default function SearchFlight() {
           <p className="text-muted-foreground text-lg md:text-xl">
             Search for flights and book your trip with ease.
           </p>
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={handleNavigate}>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="departure">Departure</Label>
@@ -179,15 +188,28 @@ export default function SearchFlight() {
                 </div>
               </div>
             </div>
-            <Button
-              className="w-full"
-              onClick={() => {
-                // handleNavigate();
-                Router.push("/my-booking");
+            <Link
+              href={{
+                pathname: "/search-flight/flight",
+                query: {
+                  search: JSON.stringify({
+                    searchFlightDeparture,
+                    searchFlightArrival,
+                  }),
+                },
               }}
             >
-              Search Flights
-            </Button>
+              <Button
+                className="w-full mt-8"
+                type="submit"
+                // onClick={() => {
+                //   // handleNavigate();
+
+                // }}
+              >
+                Search Flights
+              </Button>
+            </Link>
           </form>
         </div>
         <div className="space-y-4">
