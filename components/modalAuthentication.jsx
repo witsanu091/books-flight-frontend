@@ -1,4 +1,6 @@
 "use client";
+
+import Router from "next/router";
 import {
   Dialog,
   DialogTrigger,
@@ -20,6 +22,8 @@ import {
 } from "./ui/select";
 
 export function ModalAuthentication() {
+  // const router = Router();
+
   const [modeAuth, setModeAuth] = useState(true);
   const [errors, setErrors] = useState({ email: "" });
   const [modalAuthentication, setModalAuthentication] = useState(false);
@@ -86,6 +90,7 @@ export function ModalAuthentication() {
           key: "token",
           value: result.data?.response_data?.token_id,
         });
+        Router.reload(window.location.pathname);
         setModalAuthentication(false); // Close the dialog on success
       } else {
         alert("Can't log in. Please check your credentials.");

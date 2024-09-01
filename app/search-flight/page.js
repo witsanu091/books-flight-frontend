@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import Router from "next/router";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import {
@@ -22,7 +22,7 @@ import {
 } from "@/lib/call-api/callFlight";
 
 export default function SearchFlight() {
-  const router = useRouter();
+  // const router = useRouter();
   const [valueDepartFrom, setValueDepartFrom] = useState({});
   const [valueDestination, setValueDestination] = useState({});
   const [countCustomer, setCountCustomer] = useState("1");
@@ -72,7 +72,7 @@ export default function SearchFlight() {
   };
 
   const handleNavigate = () => {
-    router.push("/flight-searching", {
+    Router.push("/flight-searching", {
       query: JSON.stringify({
         searchFlightDeparture,
         searchFlightArrival,
@@ -183,7 +183,7 @@ export default function SearchFlight() {
               className="w-full"
               onClick={() => {
                 // handleNavigate();
-                router.push("my-booking");
+                Router.push("/my-booking");
               }}
             >
               Search Flights

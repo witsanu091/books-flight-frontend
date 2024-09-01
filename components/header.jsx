@@ -1,6 +1,7 @@
 "use client";
+import * as React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import Router from "next/router";
 // import { ModalAuthentication } from "./modalAuthentication";
 import { useEffect, useState } from "react";
 import { ModalAuthentication } from "./modalAuthentication";
@@ -9,15 +10,13 @@ import { Button } from "./ui/button";
 
 const Header = () => {
   const [isSignIn, setIsSignIn] = useState(false);
-  // console.log("🚀  token:", token);
-  const router = useRouter();
+  // const router = Router();
 
   const signOut = async () => {
-    e.preventDefault();
-    await clearStorage();
-    router.push("/search-flight");
-
     try {
+      await clearStorage();
+      Router.push("/search-flight");
+      Router.reload(window.location.pathname);
     } catch (error) {
       console.log("🚀  error:", error);
     }
