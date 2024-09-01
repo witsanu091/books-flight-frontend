@@ -1,11 +1,15 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { formatDate } from "@/lib/utils/utils";
 import { useEffect, useState } from "react";
 
 export default function FlightSearching({ searchParams }) {
   const [searchFlightDeparture, setSearchFlightDeparture] = useState({});
   const [searchFlightArrival, setSearchFlightArrival] = useState({});
+  const [dateGo, setDateGo] = useState("");
+  const [dateReturn, setdateReturn] = useState("");
+
   const { search } = searchParams;
   console.log("🚀  search:", search);
   console.log("🚀  searchFlightDeparture:", searchFlightDeparture);
@@ -16,6 +20,8 @@ export default function FlightSearching({ searchParams }) {
       const data = JSON.parse(search);
       setSearchFlightDeparture(data.searchFlightDeparture);
       setSearchFlightArrival(data.searchFlightArrival);
+      setDateGo(formatDate(data.searchFlightDeparture.flight_date));
+      setdateReturn(formatDate(data.searchFlightArrival.flight_date));
     }
   }, [search]);
 
@@ -31,7 +37,7 @@ export default function FlightSearching({ searchParams }) {
                 {searchFlightDeparture.airport_landing_name}
               </div>
               <div className="text-sm text-primary-foreground/80">
-                Aug 15, 2024
+                {`${dateGo}`}
               </div>
             </div>
           </div>
