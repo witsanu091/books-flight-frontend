@@ -35,9 +35,6 @@ export default function SearchFlight() {
   const [searchFlightDeparture, setSearchFlightDeparture] = useState({});
   const [searchFlightArrival, setSearchFlightArrival] = useState({});
 
-  const [responseDeparture, setResponseDeparture] = useState([]);
-  const [responseArrival, setResponseArrival] = useState([]);
-
   const handleDateGoChange = (e) => {
     const { value } = e.target;
     setDateTravel({ ...dateTravel, date_go: value });
@@ -53,21 +50,6 @@ export default function SearchFlight() {
       const response = await callGetFlightRecommend();
       setFlightRecommend(response.data?.response_data);
     } catch (error) {}
-  };
-
-  const submitSearch = async () => {
-    try {
-      const response1 = await callSearchFlight(searchFlightDeparture);
-      console.log("🚀  response:", response1);
-      setResponseDeparture(response1);
-      if (tripType === 2) {
-        const response2 = await callSearchFlight(searchFlightArrival);
-        console.log("🚀  response:", response2);
-        setResponseArrival(response2);
-      }
-    } catch (error) {
-      console.log("🚀  error:", error);
-    }
   };
 
   const handleNavigate = () => {
