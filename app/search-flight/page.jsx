@@ -16,14 +16,11 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import AutocompleteDepartFrom from "@/components/autocomplete/autocompleteDepartFrom";
 import AutocompleteDestination from "@/components/autocomplete/autocompleteDestination";
-import {
-  callGetFlightRecommend,
-  callSearchFlight,
-} from "@/lib/call-api/callFlight";
+import { callGetFlightRecommend } from "@/lib/call-api/callFlight";
 
 export default function SearchFlight() {
-  const [valueDepartFrom, setValueDepartFrom] = useState({});
-  const [valueDestination, setValueDestination] = useState({});
+  const [valueDepartFrom, setValueDepartFrom] = useState(null);
+  const [valueDestination, setValueDestination] = useState(null);
   const [countCustomer, setCountCustomer] = useState("1");
   const [flightRecommend, setFlightRecommend] = useState(null);
   const [tripType, setTripType] = useState("2");
@@ -52,42 +49,82 @@ export default function SearchFlight() {
     } catch (error) {}
   };
 
-  const handleNavigate = () => {
-    router.push("/my-booking");
-    // Router.push("/flight-searching", {
-    //   query: JSON.stringify({
-    //     searchFlightDeparture,
-    //     searchFlightArrival,
-    //   }),
-    // });
-    alert("test");
-
-    alert("push");
+  const SubmitSearch = () => {
+    if (
+      tripType === "2" &&
+      valueDepartFrom &&
+      valueDestination &&
+      dateTravel.date_go &&
+      dateTravel.date_return
+    ) {
+      return (
+        <Link
+          href={{
+            pathname: "/search-flight/flight",
+            query: {
+              search: JSON.stringify({
+                searchFlightDeparture,
+                searchFlightArrival,
+              }),
+            },
+          }}
+        >
+          <Button className="w-full mt-8" type="submit">
+            Search Flights
+          </Button>
+        </Link>
+      );
+    }
+    if (
+      tripType === "1" &&
+      valueDepartFrom &&
+      valueDestination &&
+      dateTravel.date_go
+    ) {
+      return (
+        <Link
+          href={{
+            pathname: "/search-flight/flight",
+            query: {
+              search: JSON.stringify({
+                searchFlightDeparture,
+                searchFlightArrival,
+              }),
+            },
+          }}
+        >
+          <Button className="w-full mt-8" type="submit">
+            Search Flights
+          </Button>
+        </Link>
+      );
+    }
+    return (
+      <Button className="w-full mt-8" type="submit" disabled={true}>
+        Search Flights
+      </Button>
+    );
   };
-  // const router = useRouter();
-
-  // if (!router.isReady) return null; // or some loading indicator
-
   useEffect(() => {
     getAllFlightRecommend();
   }, []);
 
   useEffect(() => {
     setSearchFlightDeparture({
-      airport_take_off: valueDepartFrom.airport_id,
-      airport_take_off_name: valueDepartFrom.airport_name,
-      airport_landing: valueDestination.airport_id,
-      airport_landing_name: valueDestination.airport_name,
+      airport_take_off: valueDepartFrom?.airport_id,
+      airport_take_off_name: valueDepartFrom?.airport_name,
+      airport_landing: valueDestination?.airport_id,
+      airport_landing_name: valueDestination?.airport_name,
       flight_date: dateTravel.date_go,
     });
     setSearchFlightArrival({
-      airport_take_off: valueDestination.airport_id,
-      airport_take_off_name: valueDestination.airport_name,
-      airport_landing: valueDepartFrom.airport_id,
-      airport_landing_name: valueDepartFrom.airport_name,
+      airport_take_off: valueDestination?.airport_id,
+      airport_take_off_name: valueDestination?.airport_name,
+      airport_landing: valueDepartFrom?.airport_id,
+      airport_landing_name: valueDepartFrom?.airport_name,
       flight_date: dateTravel.date_return,
     });
-  }, [valueDepartFrom, dateTravel]);
+  }, [valueDepartFrom, dateTravel, valueDestination]);
 
   return (
     <div className="w-full max-w-6xl mx-auto py-12 md:py-16 lg:py-20 px-4 md:px-6 mt-6">
@@ -99,19 +136,18 @@ export default function SearchFlight() {
           <p className="text-muted-foreground text-lg md:text-xl">
             Search for flights and book your trip with ease.
           </p>
-          <form className="space-y-4" onSubmit={handleNavigate}>
+          <form className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="departure">Departure</Label>
 
                 <AutocompleteDepartFrom airport={setValueDepartFrom} />
               </div>
-              {tripType === "2" && (
-                <div className="space-y-2">
-                  <Label htmlFor="arrival">Arrival</Label>
-                  <AutocompleteDestination airport={setValueDestination} />
-                </div>
-              )}
+
+              <div className="space-y-2">
+                <Label htmlFor="arrival">Arrival</Label>
+                <AutocompleteDestination airport={setValueDestination} />
+              </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -170,28 +206,7 @@ export default function SearchFlight() {
                 </div>
               </div>
             </div>
-            <Link
-              href={{
-                pathname: "/search-flight/flight",
-                query: {
-                  search: JSON.stringify({
-                    searchFlightDeparture,
-                    searchFlightArrival,
-                  }),
-                },
-              }}
-            >
-              <Button
-                className="w-full mt-8"
-                type="submit"
-                // onClick={() => {
-                //   // handleNavigate();
-
-                // }}
-              >
-                Search Flights
-              </Button>
-            </Link>
+            <SubmitSearch />
           </form>
         </div>
         <div className="space-y-4">

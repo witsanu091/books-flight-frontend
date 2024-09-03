@@ -17,7 +17,7 @@ export default function FlightSearching({ searchParams }) {
   const [dateReturn, setdateReturn] = useState("");
   const [responseDeparture, setResponseDeparture] = useState([]);
   const [responseArrival, setResponseArrival] = useState([]);
-  const [selectDeparture, setSelectDeparture] = useState({});
+  const [selectDeparture, setSelectDeparture] = useState(null);
 
   const searchFlightDeparture = async (data) => {
     try {
@@ -47,7 +47,9 @@ export default function FlightSearching({ searchParams }) {
       const fetchData = async () => {
         try {
           await searchFlightDeparture(data.searchFlightDeparture);
-          await searchFlightArrival(data.searchFlightArrival);
+          if (data.searchFlightArrival.flight_date) {
+            await searchFlightArrival(data.searchFlightArrival);
+          }
         } catch (error) {
           console.log("🚀  error:", error);
         }
@@ -139,7 +141,7 @@ export default function FlightSearching({ searchParams }) {
       <div className="w-full max-w-6xl mx-auto py-8 md:py-10 lg:py-16 px-4 md:px-6">
         <div className="grid gap-6">
           {responseDeparture &&
-            responseDeparture.map((departure, index) => (
+            responseDeparture?.map((departure, index) => (
               <Card key={index}>
                 <CardContent className="grid gap-4 mt-4">
                   <div className="flex items-center justify-between">
@@ -208,94 +210,101 @@ export default function FlightSearching({ searchParams }) {
             ))}
         </div>
       </div>
-      <div className="bg-primary text-primary-foreground py-4 px-6">
-        <div className=" mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <PlaneIcon className="w-6 h-6" />
-            <div className="grid gap-1">
-              <div className="text-lg font-medium">
-                {flightArrival.airport_take_off_name} {"=>"}{" "}
-                {flightArrival.airport_landing_name}
-              </div>
-              <div className="text-sm text-primary-foreground/80">
-                {`${dateReturn}`}
+
+      {responseArrival && responseArrival.length > 0 && (
+        <>
+          <div className="bg-primary text-primary-foreground py-4 px-6">
+            <div className=" mx-auto flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <PlaneIcon className="w-6 h-6" />
+                <div className="grid gap-1">
+                  <div className="text-lg font-medium">
+                    {flightArrival.airport_take_off_name} {"=>"}{" "}
+                    {flightArrival.airport_landing_name}
+                  </div>
+                  <div className="text-sm text-primary-foreground/80">
+                    {`${dateReturn}`}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-      <div className="w-full max-w-6xl mx-auto py-12 md:py-16 lg:py-20 px-4 md:px-6">
-        <div className="grid gap-6">
-          {responseArrival && responseArrival.length > 0 ? (
-            responseArrival.map((arrival, index) => (
-              <Card key={index}>
-                <CardContent className="grid gap-4 mt-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <img
-                        src="/placeholder.svg"
-                        alt="United Airlines"
-                        width={32}
-                        height={32}
-                        className="rounded-full"
-                        style={{ aspectRatio: "32/32", objectFit: "cover" }}
-                      />
-                      <div className="font-medium">{arrival.airline_name}</div>
-                      <div className="text-sm text-muted-foreground">
-                        {arrival.airline_number}
-                      </div>
-                    </div>
-                    <div className="text-2xl font-bold">
-                      {formatCurrency(arrival.price)}
-                    </div>
-                  </div>
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div className="grid gap-1">
-                      <div className="text-sm text-muted-foreground">
-                        Depart
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="text-xl font-medium">
-                          {convertTime24to12(arrival.time_take_off)}
+          <div className="w-full max-w-6xl mx-auto py-12 md:py-16 lg:py-20 px-4 md:px-6">
+            <div className="grid gap-6">
+              {responseArrival && responseArrival.length > 0 ? (
+                responseArrival.map((arrival, index) => (
+                  <Card key={index}>
+                    <CardContent className="grid gap-4 mt-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <img
+                            src="/placeholder.svg"
+                            alt="United Airlines"
+                            width={32}
+                            height={32}
+                            className="rounded-full"
+                            style={{ aspectRatio: "32/32", objectFit: "cover" }}
+                          />
+                          <div className="font-medium">
+                            {arrival.airline_name}
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            {arrival.airline_number}
+                          </div>
+                        </div>
+                        <div className="text-2xl font-bold">
+                          {formatCurrency(arrival.price)}
                         </div>
                       </div>
-                      <div className="text-sm text-muted-foreground">
-                        {arrival.takeoff_airport}
-                      </div>
-                    </div>
-                    <div className="grid gap-1">
-                      <div className="text-sm text-muted-foreground">
-                        Arrive
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="text-xl font-medium">
-                          {convertTime24to12(arrival.time_landing)}
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <div className="grid gap-1">
+                          <div className="text-sm text-muted-foreground">
+                            Depart
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="text-xl font-medium">
+                              {convertTime24to12(arrival.time_take_off)}
+                            </div>
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            {arrival.takeoff_airport}
+                          </div>
+                        </div>
+                        <div className="grid gap-1">
+                          <div className="text-sm text-muted-foreground">
+                            Arrive
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="text-xl font-medium">
+                              {convertTime24to12(arrival.time_landing)}
+                            </div>
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            {arrival.landing_airport}
+                          </div>
                         </div>
                       </div>
-                      <div className="text-sm text-muted-foreground">
-                        {arrival.landing_airport}
+                      <div className="flex items-center justify-between">
+                        <div className="text-sm text-muted-foreground">
+                          Duration: {arrival.hour_travel}h 0m
+                        </div>
+                        <Button variant="outline" size="sm">
+                          Select
+                        </Button>
                       </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="text-sm text-muted-foreground">
-                      Duration: {arrival.hour_travel}h 0m
-                    </div>
-                    <Button variant="outline" size="sm">
-                      Select
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
-          ) : (
-            <div className="text-center py-10">
-              <h2>Flight Not Found</h2>
-              <p>Please try different search criteria.</p>
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                <div className="text-center py-10">
+                  <h2>Flight Not Found</h2>
+                  <p>Please try different search criteria.</p>
+                </div>
+              )}
             </div>
-          )}
-        </div>
-      </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { callSearchAirport } from "@/lib/call-api/callSearchAirport";
 import { Input } from "../ui/input";
-import styles from "./AutocompleteSearch.module.css"; // Assuming you're using CSS Modules
+import styles from "./AutocompleteSearch.module.css";
 
 const AutocompleteDestination = ({ airport }) => {
   const [query, setQuery] = useState("");
